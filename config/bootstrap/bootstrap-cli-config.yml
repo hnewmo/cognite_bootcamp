@@ -55,35 +55,56 @@ bootstrap:
     # Mapping between IDP (Azure Active Directory) groups and CDF groups.
     idp-cdf-mappings:
     # Support multiple CDF Projects, like dev/test/prod in one config.
-        - cdf-project: <CDF project name> # i.e. bootcamp-01-test
+        - cdf-project: cdf-bootcamp-20-test
           mappings:
               - cdf-group: cdf:root
-                idp-source-id: <AAD Group Object id>
-                idp-source-name: <AAD Group name>
+                idp-source-id: 7ad260e4-43d6-4c9c-bbba-2715528fda9e
+                idp-source-name: bootcamp-20-test-admin
               - cdf-group: cdf:all:owner
-                idp-source-id: <AAD Group Object Id> # for the AAD Group to be matched to cdf-group
-                idp-source-name: <AAD Group name> # i.e. bootcamp-01-test-all-owner
+                idp-source-id: 933b27f7-279e-44db-a897-6c556195dbbf
+                idp-source-name: bootcamp-20-test-all-owner
               - cdf-group: cdf:all:read
-                idp-source-id: <AAD Group Object Id> # for the AAD Group to be matched to cdf-group
-                idp-source-name: <AAD Group name> # i.e. bootcamp-01-test-all-read
-
+                idp-source-id: 61d4bbcd-1e79-4dc8-a248-07ce67b49505
+                idp-source-name: bootcamp-20-test-all-read
+        - cdf-project: cdf-bootcamp-20-prod
+          mappings:
+              - cdf-group: cdf:root
+                idp-source-id: 195f2885-18e1-4e5b-89f0-8d87d0e7173c
+                idp-source-name: bootcamp-20-prod-admin
+              - cdf-group: cdf:all:owner
+                idp-source-id: a320971b-18c2-46d1-a4a6-2de5d43f92d0
+                idp-source-name: bootcamp-20-prod-all-owner
+              - cdf-group: cdf:all:read
+                idp-source-id: 04a6d705-7d53-4f12-8832-9b5366a248a5
+                idp-source-name: bootcamp-20-prod-all-read
 
     namespaces:
         # Typical config will have a namespace for data sources ("src") and a namespace for use cases ("uc")
-        - ns-name: <Namespace name>
-          description: Data sources for the Ice Cream Factory # HINT
+        - ns-name: src
+          description: Sources used for data extraction
 
           # Node names will normally follow src:001:srcname or uc:001:usecasename naming convention
           ns-nodes:
-              - node-name: <Node name>
-                description: Data from SAP # HINT
+              - node-name: src:001:sap
+                description: Source 01 data from SAP
+              - node-name: src:002:opcua
+                description: Source 02 data from OPCUA
         # HINT: Add another namespace below
+        - ns-name: uc
+          description: Use cases representing the data/products
+          ns-nodes:
+              - node-name: uc:001:oee
+                description: Use case 001 Overall Equipment Effectiveness
+                shared-access:
+                    read:
+                        - node-name: src:001:sap
+                        - node-name: src:002:opcua
 
 
 # de-facto standards for CDF CogniteClient and logger configuration.
 # Following the same parameter structure as the 'Cognite Python Extractor-Utilities'
 # and 'Cognite DB Extractor' configuration.
-cognite: # kwargs to pass to the CogniteClient, Environment variable format: ${ENVIRONMENT_VARIABLE_NAME}
+cognite:
     # host: https://${BOOTSTRAP_CDF_CLUSTER}.cognitedata.com/
     host: ${BOOTSTRAP_CDF_HOST}
     project: ${BOOTSTRAP_CDF_PROJECT}
